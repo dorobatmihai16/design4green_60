@@ -46,6 +46,7 @@ public class CityServiceImpl implements CityService {
         city.setCityName(cityStatistics.getCityName());
         city.setCityInsee(cityStatistics.getCityInsee());
         city.setDepartmentName(cityStatistics.getDepartmentName());
+        city.setDepartmentInsee(cityStatistics.getDepartmentInsee());
         city.setRegionName(cityStatistics.getRegionName());
         city.setRegionInsee(cityStatistics.getRegionInsee());
         city.setPopulation(cityStatistics.getPopulation());
