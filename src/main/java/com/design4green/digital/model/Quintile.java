@@ -9,7 +9,7 @@ import javax.persistence.*;
 @Data
 @ToString
 @Table(name="quintiles", schema = "public")
-public class Quintiles {
+public class Quintile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
