@@ -15,6 +15,17 @@ public interface QuintileRepository extends CrudRepository<Quintile, Long> {
 
     List<Quintile> findByCityInsee(Integer cityInsee);
 
-    List<Quintile> findByScoreGlobalBetween(Integer fromScore, Integer toScore);
+    List<Quintile> findByScoreGlobalBetween(Double fromScore, Double toScore);
 
+    List<Quintile> findByAccessAuxInterfacesBetween(Double fromScore, Double toScore);
+
+    List<Quintile> findByAccessGlobalBetween(Double fromScore, Double Double);
+
+    List<Quintile> findByAccessAInformationBetween(Double fromScore, Double toScore);
+
+    List<Quintile> findByCompetencesAdministrativesBetween(Double fromScore, Double toScore);
+
+    List<Quintile> findByCompetencesNumeriquesBetween(Double fromScore, Double toScore);
+
+    List<Quintile> findByCompetencesGlobalBetween(Double fromScore, Double toScore);
 }

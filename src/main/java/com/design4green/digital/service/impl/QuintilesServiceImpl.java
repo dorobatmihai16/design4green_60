@@ -39,8 +39,7 @@ public class QuintilesServiceImpl implements QuintilesService {
         return quintileRepository.findByCityInsee(cityInsee);
     }
 
-    @Override
-    public List<Quintile> findByScoreGlobalBetween(Integer fromScore, Integer toScore) {
+    public List<Quintile> findByScoreGlobalBetween(Double fromScore, Double toScore) {
         return quintileRepository.findByScoreGlobalBetween(fromScore, toScore);
     }
 
