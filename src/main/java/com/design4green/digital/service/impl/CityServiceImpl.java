@@ -8,6 +8,7 @@ import com.design4green.digital.service.CityStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -20,6 +21,11 @@ public class CityServiceImpl implements CityService {
 
     @Autowired
     private CityRepository cityRepository;
+
+    public List<City> getCities() {
+        return StreamSupport.stream(cityRepository.findAll().spliterator(), false)
+                .collect(Collectors.toList());
+    }
 
     public void generateAndSaveCitiesByCollectionOfCityStatisticsFromDb() {
         cityRepository.saveAll(generateCitiesByCollectionOfCityStatisticsFromDb());
