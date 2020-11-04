@@ -6,4 +6,6 @@ public interface CityStatisticsService {
 
     Iterable<CityStatistics> findAll();
 
+    boolean isInvalidCityStatistics(CityStatistics cityStatistics);
+
 }
