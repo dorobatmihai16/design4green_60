@@ -13,5 +13,5 @@ public interface QuintilesService {
     List<Quintiles> findByCityInsee(Integer cityInsee);
 
     List<Quintiles> findByScoreGlobalBetween(Integer fromScore, Integer toScore);
-    
+
 }
