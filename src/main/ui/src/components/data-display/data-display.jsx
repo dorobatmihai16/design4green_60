@@ -1,6 +1,8 @@
 import { Table } from 'antd';
 
 import './data-display.css';
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const columns = [
   {
@@ -95,13 +97,38 @@ const data = [
     COMPETENCES_NUMERIQUE: '44',
     GLOBAL_COMPETENCES: '45'
   },  
-];  
-  
+];
 
+const exportPDF = (indexData,columns) => {
+  const unit = "pt";
+  const size = "A4"; // Use A1, A2, A3 or A4
+  const orientation = "landscape"; // portrait or landscape
+
+  const marginLeft = 40;
+  const doc = new jsPDF(orientation, unit, size);
+
+  doc.setFontSize(15);
+
+  const title = "Indice de fragilite numerique";
+  const headers = [columns.map(column=>column.title)];
+
+  const data = indexData.map(elt=> [elt.nomcom, elt.codepostal, elt.region, elt.population, elt.SCORE_GLOBAL, elt.Access_aux_interface_numerique, elt.ACCESS_INFORMATION, elt.GLOBAL_ACCESS, elt.COMPETENCES_ADMINISTRATIVES, elt.COMPETENCES_NUMERIQUE, elt.GLOBAL_COMPETENCES]);
+  console.log("indexData",indexData);
+  let content = {
+    startY: 50,
+    head: headers,
+    body: data
+  };
+
+  doc.text(title, marginLeft, 40);
+  doc.autoTable(content);
+  doc.save("report.pdf")
+}
 
 const DataDisplay = ({indexData}) => (
     <div className="main-table">
-       <Table dataSource={indexData} columns={columns} />;
+       <Table dataSource={indexData} columns={columns} />
+      <button onClick={() => exportPDF(indexData, columns)}>Generate Report</button>
     </div>
 )
 
