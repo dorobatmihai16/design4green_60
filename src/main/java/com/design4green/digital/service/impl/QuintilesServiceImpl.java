@@ -9,6 +9,7 @@ import com.design4green.digital.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -84,36 +85,121 @@ public class QuintilesServiceImpl implements QuintilesService {
                 + ( ( ( (cityStatistics.getPartDesMenagesUnePersone() - Constants.CONST_PART_MENAGES_PERSONNE) / Constants.CONST_PART_MENAGES_PERSONNE ) + 1 ) * 100 )
                 + servicesPublicIndiv;
         double accesInformationValue = ( accesInformationRaw * 100 ) / ( 3 * 100);
-        quintile.setAccessAInformation(accesInformationValue);
+        quintile.setAccessAInformation(getAccesAInformationKPI(accesInformationValue));
 
         double accessGlobalRaw = accesAuxInterfacesRaw + accesInformationRaw;
         double accessGlobalValue = (accessGlobalRaw * 100) / ( 7 * 100);
-        quintile.setAccessGlobal(getAccesAInformationKPI(accessGlobalValue));
+        quintile.setAccessGlobal(getGlobalAccesKPI(accessGlobalValue));
+
+        double competencesAdminRawValue =
+                ( ( ( cityStatistics.getPartDesChomeurs() - Constants.CONST_PART_CHOMEURS ) / Constants.CONST_PART_CHOMEURS ) + 1 ) * 100
+                + ( ( ( cityStatistics.getPartDesPersonnesAge15To29() - Constants.CONST_PART_PERSONNES_AGEES_15_29 ) / Constants.CONST_PART_PERSONNES_AGEES_15_29 ) + 1 ) * 100;
+        double competencesAdminValue = ( competencesAdminRawValue * 100 ) / ( 2 * 100);
+        quintile.setCompetencesAdministratives(getCompetencesAdministrativesKPI(competencesAdminValue));
+
+        double competencesNumeriquesRawValue =
+                ( ( ( cityStatistics.getPartDesPersonnesAge65Plus() - Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) / Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) + 1 ) * 100
+                + ( ( ( cityStatistics.getPartDesNonOuPeutDiplomes() - Constants.CONST_PART_NON_DIPLOMES ) / Constants.CONST_PART_NON_DIPLOMES ) + 1 ) * 100;
+        double competencesNumeriquesValue = ( competencesNumeriquesRawValue * 100 ) / ( 2 * 100);
+        quintile.setCompetencesAdministratives(getCompetencesNumeriquesKPI(competencesNumeriquesValue));
+
+        double competencesGlobalRaw = competencesAdminRawValue + competencesNumeriquesRawValue;
+        double competencesGlobalValue = (competencesGlobalRaw * 100) / ( 4 * 100);
+        quintile.setAccessGlobal(getGlobalCompetencesKPI(competencesGlobalValue));
+
+        double globalScoreRaw = accessGlobalValue + competencesGlobalRaw;
+        double globalScoreValue = ( globalScoreRaw * 100 ) / ( 11 * 100 );
+        quintile.setScoreGlobal(getGlobalScoreKPI(globalScoreValue));
 
         return Optional.of(quintile);
     }
 
-    private double getAccesAuxInterfacesKPI(double accesAuxInterfacesValue) {
-        if (accesAuxInterfacesValue < 21.22) {
+    private double getAccesAuxInterfacesKPI(double value) {
+        if (value < 21.22) {
             return 1d;
-        } else if (accesAuxInterfacesValue >= 21.22 && accesAuxInterfacesValue < 26.27) {
+        } else if (value >= 21.22 && value < 26.27) {
             return 2d;
-        } else if (accesAuxInterfacesValue >= 26.27 && accesAuxInterfacesValue < 31.31) {
+        } else if (value >= 26.27 && value < 31.31) {
             return 3d;
-        } else if (accesAuxInterfacesValue >= 31.31 && accesAuxInterfacesValue < 36.36) {
+        } else if (value >= 31.31 && value < 36.36) {
             return 4d;
         }
         return 5d;
     }
 
-    private double getAccesAInformationKPI(double accesAuxInterfacesValue) {
-        if (accesAuxInterfacesValue < 56.54) {
+    private double getAccesAInformationKPI(double value) {
+        if (value < 56.54) {
             return 1d;
-        } else if (accesAuxInterfacesValue >= 56.54 && accesAuxInterfacesValue < 78.95) {
+        } else if (value >= 56.54 && value < 78.95) {
             return 2d;
-        } else if (accesAuxInterfacesValue >= 78.95 && accesAuxInterfacesValue < 101.36) {
+        } else if (value >= 78.95 && value < 101.36) {
             return 3d;
-        } else if (accesAuxInterfacesValue >= 101.36 && accesAuxInterfacesValue < 123.77) {
+        } else if (value >= 101.36 && value < 123.77) {
+            return 4d;
+        }
+        return 5d;
+    }
+
+    private double getGlobalAccesKPI(double value) {
+        if (value < 43.72) {
+            return 1d;
+        } else if (value >= 43.72 && value < 52.24) {
+            return 2d;
+        } else if (value >= 52.24 && value < 60.75) {
+            return 3d;
+        } else if (value >= 60.75 && value < 69.27) {
+            return 4d;
+        }
+        return 5d;
+    }
+
+    private double getCompetencesAdministrativesKPI(double value) {
+        if (value < 47.94) {
+            return 1d;
+        } else if (value >= 47.94 && value < 72.48) {
+            return 2d;
+        } else if (value >= 72.48 && value < 97.03) {
+            return 3d;
+        } else if (value >= 97.03 && value < 121.57) {
+            return 4d;
+        }
+        return 5d;
+    }
+
+    private double getCompetencesNumeriquesKPI(double value) {
+        if (value < 56.16) {
+            return 1d;
+        } else if (value >= 56.16 && value < 63.37) {
+            return 2d;
+        } else if (value >= 63.37 && value < 70.58) {
+            return 3d;
+        } else if (value >= 70.58 && value < 77.79) {
+            return 4d;
+        }
+        return 5d;
+    }
+
+    private double getGlobalCompetencesKPI(double value) {
+        if (value < 62.91) {
+            return 1d;
+        } else if (value >= 62.91 && value < 73.94) {
+            return 2d;
+        } else if (value >= 73.94 && value < 84.97) {
+            return 3d;
+        } else if (value >= 84.97 && value < 95.99) {
+            return 4d;
+        }
+        return 5d;
+    }
+
+    private double getGlobalScoreKPI(double value) {
+        if (value < 56.16) {
+            return 1d;
+        } else if (value >= 56.16 && value < 63.37) {
+            return 2d;
+        } else if (value >= 63.37 && value < 70.58) {
+            return 3d;
+        } else if (value >= 70.58 && value < 77.79) {
             return 4d;
         }
         return 5d;
