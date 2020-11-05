@@ -69,8 +69,8 @@ public class CityStatistics {
     @Column(name = "part_des_personnes_age_15_29")
     private Double partDesPersonnesAge15To29;
 
-    @Column(name = "part_des_personnes_age_65_plus")
-    private Double partDesPersonnesAge65Plus;
+//    @Column(name = "part_des_personnes_age_65_plus")
+//    private Double partDesPersonnesAge65Plus;
 
     @Column(name = "part_des_non_ou_peut_diplomes")
     private Double partDesNonOuPeutDiplomes;

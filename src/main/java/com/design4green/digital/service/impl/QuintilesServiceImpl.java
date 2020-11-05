@@ -129,17 +129,17 @@ public class QuintilesServiceImpl implements QuintilesService {
         double competencesAdminValue = ( competencesAdminRawValue * 100 ) / ( 2 * 100);
         quintile.setCompetencesAdministratives(getCompetencesAdministrativesKPI(competencesAdminValue));
 
-        double competencesNumeriquesRawValue =
-                ( ( ( cityStatistics.getPartDesPersonnesAge65Plus() - Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) / Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) + 1 ) * 100
-                + ( ( ( cityStatistics.getPartDesNonOuPeutDiplomes() - Constants.CONST_PART_NON_DIPLOMES ) / Constants.CONST_PART_NON_DIPLOMES ) + 1 ) * 100;
-        double competencesNumeriquesValue = ( competencesNumeriquesRawValue * 100 ) / ( 2 * 100);
-        quintile.setCompetencesAdministratives(getCompetencesNumeriquesKPI(competencesNumeriquesValue));
+//        double competencesNumeriquesRawValue =
+//                ( ( ( cityStatistics.getPartDesPersonnesAge65Plus() - Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) / Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) + 1 ) * 100
+//                + ( ( ( cityStatistics.getPartDesNonOuPeutDiplomes() - Constants.CONST_PART_NON_DIPLOMES ) / Constants.CONST_PART_NON_DIPLOMES ) + 1 ) * 100;
+//        double competencesNumeriquesValue = ( competencesNumeriquesRawValue * 100 ) / ( 2 * 100);
+//        quintile.setCompetencesAdministratives(getCompetencesNumeriquesKPI(competencesNumeriquesValue));
+//
+//        double competencesGlobalRaw = competencesAdminRawValue + competencesNumeriquesRawValue;
+//        double competencesGlobalValue = (competencesGlobalRaw * 100) / ( 4 * 100);
+//        quintile.setAccessGlobal(getGlobalCompetencesKPI(competencesGlobalValue));
 
-        double competencesGlobalRaw = competencesAdminRawValue + competencesNumeriquesRawValue;
-        double competencesGlobalValue = (competencesGlobalRaw * 100) / ( 4 * 100);
-        quintile.setAccessGlobal(getGlobalCompetencesKPI(competencesGlobalValue));
-
-        double globalScoreRaw = accessGlobalValue + competencesGlobalRaw;
+        double globalScoreRaw = accessGlobalValue + 0;
         double globalScoreValue = ( globalScoreRaw * 100 ) / ( 11 * 100 );
         quintile.setScoreGlobal(getGlobalScoreKPI(globalScoreValue));
 
