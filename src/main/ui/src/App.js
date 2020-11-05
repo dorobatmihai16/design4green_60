@@ -33,7 +33,7 @@ function App(props) {
       <DataDisplay/>
         <div>
             <CookieBanner
-                message="GDPR compliance. This site doesn't use cookies and no personal data !"
+                message="GDPR compliance. This site uses cookies and no personal data !"
                 onAccept={() => {}}
                 cookie="user-has-accepted-cookies" />
         </div>
