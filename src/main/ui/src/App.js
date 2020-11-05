@@ -1,7 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-
 import './App.css';
 import AreaSelector from './components/place-selector/area-selector';
 import DataDisplay from './components/data-display/data-display';
@@ -50,6 +49,8 @@ function App(props) {
       retrieveFragilityRegion(value[0]).then(data => setIndexInfo(transformIndexInfo(data)))
     }
   }
+
+
 
   useEffect( () => {
       retrieveCityInfo().then((info) => setCityInfo(info))
