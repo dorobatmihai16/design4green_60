@@ -18,7 +18,8 @@ function App(props) {
 
   const [indexInfo, setIndexInfo] = useState([])
 
-  const transformIndexInfo = (data) => data.map(cityEntry => ({
+  const transformIndexInfo = (data) => {
+   const unfilteredAndtransformed = data.map(cityEntry => ({
 
     nomcom: cityEntry.cityName,
     codepostal: cityEntry.cityInsee,
@@ -32,6 +33,11 @@ function App(props) {
     COMPETENCES_NUMERIQUE: cityEntry.competencesNumeriques,
     GLOBAL_COMPETENCES: cityEntry.competencesGlobal
   }))
+  
+  return unfilteredAndtransformed
+}
+
+
 
   const selectPlaceHandler = (value) => {
     console.log('selectPlaceHandler', value)
@@ -50,6 +56,16 @@ function App(props) {
     }
   }
 
+  const filterOnIndex = (value) => {
+    console.log('filter on index: ', value);
+    if(value && value.length === 2) {
+      console.log('filter on index11: ', value);
+      const filtered =  indexInfo.filter( element => value[0] <= element.SCORE_GLOBAL && element.SCORE_GLOBAL <= value[1])
+      setIndexInfo(filtered);
+    }
+    
+  }
+
 
 
   useEffect( () => {
@@ -63,7 +79,7 @@ function App(props) {
         <AreaSelector citiesInfo={cityInfo} selectionHandler={selectPlaceHandler} />
         </div>        
         <div className="range-selector-container">
-          <RangeSelector/>
+          <RangeSelector changeHandler={filterOnIndex}/>
         </div>
       </div>
         
