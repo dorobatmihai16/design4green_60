@@ -1,6 +1,7 @@
 package com.design4green.digital.service.impl;
 
 import com.design4green.digital.enums.KpiType;
+import com.design4green.digital.enums.RegionEnum;
 import com.design4green.digital.model.CityStatistics;
 import com.design4green.digital.model.Quintile;
 import com.design4green.digital.repository.QuintileRepository;
@@ -153,8 +154,14 @@ public class QuintilesServiceImpl implements QuintilesService {
         Quintile quintile = new Quintile();
 
         quintile.setCityInsee(cityStatistics.getCityInsee());
+        quintile.setCityName(cityStatistics.getCityName());
+
         quintile.setDepartmentInsee(cityStatistics.getDepartmentInsee());
+        quintile.setDepartmentName(cityStatistics.getDepartmentName());
+
         quintile.setRegionInsee(cityStatistics.getRegionInsee());
+        quintile.setRegionName(RegionEnum.getRegionNameByCode(cityStatistics.getRegionInsee()));
+
         quintile.setPopulationLegale(cityStatistics.getPopulation());
 
         return quintile;
