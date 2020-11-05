@@ -8,6 +8,8 @@ import com.design4green.digital.service.QuintilesService;
 import com.design4green.digital.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -40,8 +42,39 @@ public class QuintilesServiceImpl implements QuintilesService {
         return quintileRepository.findByCityInsee(cityInsee);
     }
 
+    @Override
     public List<Quintile> findByScoreGlobalBetween(Double fromScore, Double toScore) {
         return quintileRepository.findByScoreGlobalBetween(fromScore, toScore);
+    }
+
+    @Override
+    public List<Quintile> findByAccessGlobalBetween(Double fromScore, Double toScore) {
+        return quintileRepository.findByAccessGlobalBetween(fromScore, toScore);
+    }
+
+    @Override
+    public List<Quintile> findByAccessAuxInterfacesBetween(Double fromScore, Double toScore) {
+        return quintileRepository.findByAccessAuxInterfacesBetween(fromScore, toScore);
+    }
+
+    @Override
+    public List<Quintile> findByAccessAInformationBetween(Double fromScore, Double toScore) {
+        return quintileRepository.findByAccessAInformationBetween(fromScore, toScore);
+    }
+
+    @Override
+    public List<Quintile> findByCompetencesAdministrativesBetween(Double fromScore, Double toScore) {
+        return quintileRepository.findByCompetencesAdministrativesBetween(fromScore, toScore);
+    }
+
+    @Override
+    public List<Quintile> findByCompetencesNumeriquesBetween(Double fromScore, Double toScore) {
+        return quintileRepository.findByCompetencesNumeriquesBetween(fromScore, toScore);
+    }
+
+    @Override
+    public List<Quintile> findByCompetencesGlobalBetween(Double fromScore, Double toScore) {
+        return quintileRepository.findByCompetencesGlobalBetween(fromScore, toScore);
     }
 
     public void generateAndSaveQuintilesByCollectionOfCityStatisticsFromDb() {
