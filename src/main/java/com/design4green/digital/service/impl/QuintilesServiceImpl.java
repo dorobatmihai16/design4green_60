@@ -98,7 +98,7 @@ public class QuintilesServiceImpl implements QuintilesService {
             return Optional.empty();
         }
 
-        Quintile quintile = new Quintile();
+        Quintile quintile = createQuintileWithCityData(cityStatistics);
 
         double accesAuxInterfacesRaw =
                 ( ( (1 - cityStatistics.getTauxDeCouvertureHdThd()) / Constants.CONST_TAUX_COUVERTURE_HD ) * 100 )
@@ -131,21 +131,31 @@ public class QuintilesServiceImpl implements QuintilesService {
         double competencesAdminValue = ( competencesAdminRawValue * 100 ) / ( 2 * 100);
         quintile.setCompetencesAdministratives(KpiLevels.getLevel(KpiType.COMPETENCES_ADMIN, competencesAdminValue));
 
-//        double competencesNumeriquesRawValue =
-//                ( ( ( cityStatistics.getPartDesPersonnesAge65Plus() - Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) / Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) + 1 ) * 100
-//                + ( ( ( cityStatistics.getPartDesNonOuPeutDiplomes() - Constants.CONST_PART_NON_DIPLOMES ) / Constants.CONST_PART_NON_DIPLOMES ) + 1 ) * 100;
-//        double competencesNumeriquesValue = ( competencesNumeriquesRawValue * 100 ) / ( 2 * 100);
-//        quintile.setCompetencesAdministratives(KpiLevels.getLevel(KpiType.COMPETENCES_NUMERIQUES, competencesNumeriquesValue));
-//
-//        double competencesGlobalRaw = competencesAdminRawValue + competencesNumeriquesRawValue;
-//        double competencesGlobalValue = (competencesGlobalRaw * 100) / ( 4 * 100);
-//        quintile.setAccessGlobal(KpiLevels.getLevel(KpiType.COMPETENCES_GLOBAL, competencesGlobalValue));
+        double competencesNumeriquesRawValue =
+                ( ( ( cityStatistics.getPartDesPersonnesAge65Plus() - Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) / Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) + 1 ) * 100
+                + ( ( ( cityStatistics.getPartDesNonOuPeutDiplomes() - Constants.CONST_PART_NON_DIPLOMES ) / Constants.CONST_PART_NON_DIPLOMES ) + 1 ) * 100;
+        double competencesNumeriquesValue = ( competencesNumeriquesRawValue * 100 ) / ( 2 * 100);
+        quintile.setCompetencesNumeriques(KpiLevels.getLevel(KpiType.COMPETENCES_NUMERIQUES, competencesNumeriquesValue));
+
+        double competencesGlobalRaw = competencesAdminRawValue + competencesNumeriquesRawValue;
+        double competencesGlobalValue = (competencesGlobalRaw * 100) / ( 4 * 100);
+        quintile.setCompetencesGlobal(KpiLevels.getLevel(KpiType.COMPETENCES_GLOBAL, competencesGlobalValue));
 
         double globalScoreRaw = accessGlobalValue + 0;
         double globalScoreValue = ( globalScoreRaw * 100 ) / ( 11 * 100 );
         quintile.setScoreGlobal(KpiLevels.getLevel(KpiType.GLOBAL, globalScoreValue));
 
         return Optional.of(quintile);
+    }
+
+    private Quintile createQuintileWithCityData(CityStatistics cityStatistics) {
+        Quintile quintile = new Quintile();
+
+        quintile.setCityInsee(cityStatistics.getCityInsee());
+        quintile.setDepartmentInsee(cityStatistics.getDepartmentInsee());
+        quintile.setRegionInsee(cityStatistics.getRegionInsee());
+
+        return quintile;
     }
 
 }

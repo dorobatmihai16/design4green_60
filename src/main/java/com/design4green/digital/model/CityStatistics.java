@@ -8,12 +8,11 @@ import javax.persistence.*;
 @Entity
 @Data
 @ToString
-@Table(name="city_statistics", schema = "public")
+@Table(name="base_de_donnees", schema = "public")
 public class CityStatistics {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="city_id")
     private Long id;
 
     @Column(name="nom_com")
@@ -28,12 +27,13 @@ public class CityStatistics {
     @Column(name="insee_dep")
     private Integer departmentInsee;
 
-    @Column(name="nom_reg")
-    private String regionName;
+//    @Column(name="nom_reg")
+//    private String regionName;
 
     @Column(name="insee_reg")
     private Integer regionInsee;
 
+    @Column(name="population_legale")
     private Integer population;
 
     @Column(name = "taux_de_couverture_hd_thd")
@@ -48,13 +48,10 @@ public class CityStatistics {
     @Column(name = "revenus_median_disponible")
     private Double revenusMedianDisponible;
 
-    @Column(name = "part_des_familles_monoparentale")
+    @Column(name = "part_des_familles_monoparentales")
     private Double partDesFamillesMonoparentales;
 
-    @Column(name = "part_des_menages")
-    private Double partDesMenages;
-
-    @Column(name = "part_des_menages_une_persone")
+    @Column(name = "part_des_menages_d_une_personne")
     private Double partDesMenagesUnePersone;
 
     @Column(name = "services_publics_individu")
@@ -66,13 +63,13 @@ public class CityStatistics {
     @Column(name = "part_des_chomeurs")
     private Double partDesChomeurs;
 
-    @Column(name = "part_des_personnes_age_15_29")
+    @Column(name = "part_des_personnes_agees_de_15_29_ans")
     private Double partDesPersonnesAge15To29;
 
-//    @Column(name = "part_des_personnes_age_65_plus")
-//    private Double partDesPersonnesAge65Plus;
+    @Column(name = "part_des_personnes_agees_de_65_ans_plus")
+    private Double partDesPersonnesAge65Plus;
 
-    @Column(name = "part_des_non_ou_peut_diplomes")
+    @Column(name = "part_des_non_ou_peu_diplomes_dans_la_population_non_scolarisee_")
     private Double partDesNonOuPeutDiplomes;
 
 }
