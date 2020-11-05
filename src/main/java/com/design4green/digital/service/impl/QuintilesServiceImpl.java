@@ -155,6 +155,7 @@ public class QuintilesServiceImpl implements QuintilesService {
         quintile.setCityInsee(cityStatistics.getCityInsee());
         quintile.setDepartmentInsee(cityStatistics.getDepartmentInsee());
         quintile.setRegionInsee(cityStatistics.getRegionInsee());
+        quintile.setPopulationLegale(cityStatistics.getPopulation());
 
         return quintile;
     }

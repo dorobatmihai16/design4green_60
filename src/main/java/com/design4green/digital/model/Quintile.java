@@ -25,6 +25,9 @@ public class Quintile {
     @Column(name="insee_reg")
     private Integer regionInsee;
 
+    @Column(name="population_legale")
+    private Integer populationLegale;
+
     @Column(name="acces_aux_interfaces_numeriques")
     private Double accessAuxInterfaces;
 
