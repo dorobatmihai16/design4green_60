@@ -84,6 +84,8 @@ public class QuintilesServiceImpl implements QuintilesService {
     }
 
     private Iterable<Quintile> generateQuintilesByCollectionOfCityStatisticsFromDb() {
+        quintileRepository.deleteAll();
+
         Iterable<CityStatistics> cityStatistics = cityStatisticsService.findAll();
 
         return StreamSupport.stream(cityStatistics.spliterator(), false)
