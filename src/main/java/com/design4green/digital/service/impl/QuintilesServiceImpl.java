@@ -10,10 +10,9 @@ import com.design4green.digital.utils.Constants;
 import com.design4green.digital.utils.KpiLevels;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,6 +20,16 @@ import java.util.stream.StreamSupport;
 
 @Service
 public class QuintilesServiceImpl implements QuintilesService {
+
+    public static final int WEIGHT_ACCESS_AUX_INTERFACES = 4;
+    public static final int WEIGHT_ACCESS_A_INFO = 3;
+    public static final int WEIGHT_ACCESS_GLOBAL = 7;
+    public static final int WEIGHT_COMPETENCES_ADMIN = 2;
+    public static final int WEIGHT_COMPETENCES_NUMERIQUES = 2;
+    public static final int WEIGHT_COMPETENCES_GLOBAL = 4;
+    public static final int WEIGHT_GLOBAL = 11;
+
+    public static final int ONE_HUNDRED = 100;
 
     @Autowired
     private CityStatisticsService cityStatisticsService;
@@ -84,6 +93,8 @@ public class QuintilesServiceImpl implements QuintilesService {
     }
 
     private Iterable<Quintile> generateQuintilesByCollectionOfCityStatisticsFromDb() {
+        quintileRepository.deleteAll();
+
         Iterable<CityStatistics> cityStatistics = cityStatisticsService.findAll();
 
         return StreamSupport.stream(cityStatistics.spliterator(), false)
@@ -100,49 +111,39 @@ public class QuintilesServiceImpl implements QuintilesService {
 
         Quintile quintile = createQuintileWithCityData(cityStatistics);
 
-        double accesAuxInterfacesRaw =
-                ( ( (1 - cityStatistics.getTauxDeCouvertureHdThd()) / Constants.CONST_TAUX_COUVERTURE_HD ) * 100 )
-                +  ( ( (1 - cityStatistics.getTauxDeCouvertureMobile()) / Constants.CONST_TAUX_COUVERTURE_MOBILE ) * 100 )
-                +  ( ( ( (cityStatistics.getTauxDePauvrete() - Constants.CONST_TAUX_PAUVRETE) / Constants.CONST_TAUX_PAUVRETE ) + 1 ) * 100 )
-                +  ( ( ( (Constants.CONST_REVENUS_MEDIAN - cityStatistics.getRevenusMedianDisponible()) / Constants.CONST_REVENUS_MEDIAN ) + 1 ) * 100 );
-        double accesAuxInterfacesValue = (accesAuxInterfacesRaw * 100) / ( 4 * 100);
+        double accesAuxInterfacesRaw = calculateAccessAuxInterfacesRaw(cityStatistics);
+        double accesAuxInterfacesValue
+                = (accesAuxInterfacesRaw * ONE_HUNDRED) / ( WEIGHT_ACCESS_AUX_INTERFACES * ONE_HUNDRED);
         quintile.setAccessAuxInterfaces(KpiLevels.getLevel(KpiType.ACCESS_AUX_INTERFACE, accesAuxInterfacesValue));
 
-        double servicesPublicIndiv = 2
-                - ( ( cityStatistics.getServicesPublicIndividu() - Constants.CONST_PART_SERVICES_PUBLIC_INDIV ) / Constants.CONST_PART_SERVICES_PUBLIC_INDIV )
-                + 1;
-        if (servicesPublicIndiv < 0) {
-            servicesPublicIndiv = 0;
-        }
-        double accesInformationRaw =
-                ( ( ( (cityStatistics.getPartDesFamillesMonoparentales() - Constants.CONST_PART_FAMILLES_MONO) / Constants.CONST_PART_FAMILLES_MONO ) + 1 ) * 100 )
-                + ( ( ( (cityStatistics.getPartDesMenagesUnePersone() - Constants.CONST_PART_MENAGES_PERSONNE) / Constants.CONST_PART_MENAGES_PERSONNE ) + 1 ) * 100 )
-                + servicesPublicIndiv;
-        double accesInformationValue = ( accesInformationRaw * 100 ) / ( 3 * 100);
+        double accesInformationRaw = calculateAccessALInformationRawValue(cityStatistics);
+        double accesInformationValue
+                = ( accesInformationRaw * ONE_HUNDRED ) / ( WEIGHT_ACCESS_A_INFO * ONE_HUNDRED);
         quintile.setAccessAInformation(KpiLevels.getLevel(KpiType.ACCESS_A_INFO, accesInformationValue));
 
         double accessGlobalRaw = accesAuxInterfacesRaw + accesInformationRaw;
-        double accessGlobalValue = (accessGlobalRaw * 100) / ( 7 * 100);
+        double accessGlobalValue
+                = (accessGlobalRaw * ONE_HUNDRED) / ( WEIGHT_ACCESS_GLOBAL * ONE_HUNDRED);
         quintile.setAccessGlobal(KpiLevels.getLevel(KpiType.ACCESS_GLOBAL, accessGlobalValue));
 
-        double competencesAdminRawValue =
-                ( ( ( cityStatistics.getPartDesChomeurs() - Constants.CONST_PART_CHOMEURS ) / Constants.CONST_PART_CHOMEURS ) + 1 ) * 100
-                + ( ( ( cityStatistics.getPartDesPersonnesAge15To29() - Constants.CONST_PART_PERSONNES_AGEES_15_29 ) / Constants.CONST_PART_PERSONNES_AGEES_15_29 ) + 1 ) * 100;
-        double competencesAdminValue = ( competencesAdminRawValue * 100 ) / ( 2 * 100);
+        double competencesAdminRawValue = calculateCompetencesAdministrativesRawValue(cityStatistics);
+        double competencesAdminValue
+                = ( competencesAdminRawValue * ONE_HUNDRED ) / ( WEIGHT_COMPETENCES_ADMIN * ONE_HUNDRED);
         quintile.setCompetencesAdministratives(KpiLevels.getLevel(KpiType.COMPETENCES_ADMIN, competencesAdminValue));
 
-        double competencesNumeriquesRawValue =
-                ( ( ( cityStatistics.getPartDesPersonnesAge65Plus() - Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) / Constants.CONST_PART_PERSONNES_AGEES_65_PLUS ) + 1 ) * 100
-                + ( ( ( cityStatistics.getPartDesNonOuPeutDiplomes() - Constants.CONST_PART_NON_DIPLOMES ) / Constants.CONST_PART_NON_DIPLOMES ) + 1 ) * 100;
-        double competencesNumeriquesValue = ( competencesNumeriquesRawValue * 100 ) / ( 2 * 100);
+        double competencesNumeriquesRawValue = calculateCompetencesNumeriquesRawValue(cityStatistics);
+        double competencesNumeriquesValue
+                = ( competencesNumeriquesRawValue * ONE_HUNDRED ) / ( WEIGHT_COMPETENCES_NUMERIQUES * ONE_HUNDRED);
         quintile.setCompetencesNumeriques(KpiLevels.getLevel(KpiType.COMPETENCES_NUMERIQUES, competencesNumeriquesValue));
 
         double competencesGlobalRaw = competencesAdminRawValue + competencesNumeriquesRawValue;
-        double competencesGlobalValue = (competencesGlobalRaw * 100) / ( 4 * 100);
+        double competencesGlobalValue
+                = (competencesGlobalRaw * ONE_HUNDRED) / ( WEIGHT_COMPETENCES_GLOBAL * ONE_HUNDRED);
         quintile.setCompetencesGlobal(KpiLevels.getLevel(KpiType.COMPETENCES_GLOBAL, competencesGlobalValue));
 
-        double globalScoreRaw = accessGlobalValue + 0;
-        double globalScoreValue = ( globalScoreRaw * 100 ) / ( 11 * 100 );
+        double globalScoreRaw = accessGlobalRaw + competencesGlobalRaw;
+        double globalScoreValue
+                = ( globalScoreRaw * ONE_HUNDRED ) / ( WEIGHT_GLOBAL * ONE_HUNDRED );
         quintile.setScoreGlobal(KpiLevels.getLevel(KpiType.GLOBAL, globalScoreValue));
 
         return Optional.of(quintile);
@@ -156,6 +157,115 @@ public class QuintilesServiceImpl implements QuintilesService {
         quintile.setRegionInsee(cityStatistics.getRegionInsee());
 
         return quintile;
+    }
+
+    private double calculateAccessAuxInterfacesRaw(CityStatistics cityStatistics) {
+        BigDecimal tauxDeCouvertureHdThd =
+                BigDecimal.ONE
+                        .subtract(BigDecimal.valueOf(cityStatistics.getTauxDeCouvertureHdThd()))
+                        .divide(BigDecimal.valueOf(Constants.CONST_TAUX_COUVERTURE_HD), RoundingMode.HALF_EVEN)
+                        .multiply(BigDecimal.valueOf(100));
+
+        BigDecimal tauxDeCouvertureMobile =
+                BigDecimal.ONE
+                        .subtract(BigDecimal.valueOf(cityStatistics.getTauxDeCouvertureMobile()))
+                        .divide(BigDecimal.valueOf(Constants.CONST_TAUX_COUVERTURE_MOBILE), RoundingMode.HALF_EVEN)
+                        .multiply(BigDecimal.valueOf(100));
+
+        BigDecimal tauxPauvrete =
+                BigDecimal.valueOf(cityStatistics.getTauxDePauvrete())
+                        .subtract(BigDecimal.valueOf(Constants.CONST_TAUX_PAUVRETE))
+                        .divide(BigDecimal.valueOf(Constants.CONST_TAUX_PAUVRETE), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        BigDecimal revenusMedian =
+                BigDecimal.valueOf(Constants.CONST_REVENUS_MEDIAN)
+                        .subtract(BigDecimal.valueOf(cityStatistics.getRevenusMedianDisponible()))
+                        .divide(BigDecimal.valueOf(Constants.CONST_REVENUS_MEDIAN), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        return tauxDeCouvertureHdThd
+                .add(tauxDeCouvertureMobile)
+                .add(tauxPauvrete)
+                .add(revenusMedian)
+                .doubleValue();
+    }
+
+    public double calculateAccessALInformationRawValue(CityStatistics cityStatistics) {
+        BigDecimal servicesPublicIndiv =
+                BigDecimal.valueOf(2)
+                    .subtract(
+                            BigDecimal.valueOf(cityStatistics.getServicesPublicIndividu())
+                                    .subtract(BigDecimal.valueOf(Constants.CONST_PART_SERVICES_PUBLIC_INDIV))
+                                    .divide(BigDecimal.valueOf(Constants.CONST_PART_SERVICES_PUBLIC_INDIV), RoundingMode.HALF_EVEN)
+                    )
+                    .add(BigDecimal.ONE);
+        if (servicesPublicIndiv.signum() == -1) {
+            servicesPublicIndiv = BigDecimal.ZERO;
+        } else {
+            servicesPublicIndiv = servicesPublicIndiv.multiply(BigDecimal.valueOf(100));
+        }
+
+        BigDecimal partDesFamillesMonoparentales =
+                BigDecimal.valueOf(cityStatistics.getPartDesFamillesMonoparentales())
+                        .subtract(BigDecimal.valueOf(Constants.CONST_PART_FAMILLES_MONO))
+                        .divide(BigDecimal.valueOf(Constants.CONST_PART_FAMILLES_MONO), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        BigDecimal partDesMenagesUnePersone =
+                BigDecimal.valueOf(cityStatistics.getPartDesMenagesUnePersone())
+                        .subtract(BigDecimal.valueOf(Constants.CONST_PART_MENAGES_PERSONNE))
+                        .divide(BigDecimal.valueOf(Constants.CONST_PART_MENAGES_PERSONNE), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        return partDesFamillesMonoparentales
+                .add(partDesMenagesUnePersone)
+                .add(servicesPublicIndiv)
+                .doubleValue();
+    }
+
+    public double calculateCompetencesAdministrativesRawValue(CityStatistics cityStatistics) {
+        BigDecimal partDesChomeurs =
+                BigDecimal.valueOf(cityStatistics.getPartDesChomeurs())
+                        .subtract(BigDecimal.valueOf(Constants.CONST_PART_CHOMEURS))
+                        .divide(BigDecimal.valueOf(Constants.CONST_PART_CHOMEURS), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        BigDecimal partDesPersonnesAge15To29 =
+                BigDecimal.valueOf(cityStatistics.getPartDesPersonnesAge15To29())
+                        .subtract(BigDecimal.valueOf(Constants.CONST_PART_PERSONNES_AGEES_15_29))
+                        .divide(BigDecimal.valueOf(Constants.CONST_PART_PERSONNES_AGEES_15_29), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        return partDesChomeurs
+                .add(partDesPersonnesAge15To29)
+                .doubleValue();
+    }
+
+    public double calculateCompetencesNumeriquesRawValue(CityStatistics cityStatistics) {
+        BigDecimal partDesPersonnesAge65Plus =
+                BigDecimal.valueOf(cityStatistics.getPartDesPersonnesAge65Plus())
+                        .subtract(BigDecimal.valueOf(Constants.CONST_PART_PERSONNES_AGEES_65_PLUS))
+                        .divide(BigDecimal.valueOf(Constants.CONST_PART_PERSONNES_AGEES_65_PLUS), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        BigDecimal partDesNonOuPeutDiplomes =
+                BigDecimal.valueOf(cityStatistics.getPartDesNonOuPeutDiplomes())
+                        .subtract(BigDecimal.valueOf(Constants.CONST_PART_NON_DIPLOMES))
+                        .divide(BigDecimal.valueOf(Constants.CONST_PART_NON_DIPLOMES), RoundingMode.HALF_EVEN)
+                        .add(BigDecimal.ONE)
+                        .multiply(BigDecimal.valueOf(100));
+
+        return partDesPersonnesAge65Plus
+                .add(partDesNonOuPeutDiplomes)
+                .doubleValue();
     }
 
 }

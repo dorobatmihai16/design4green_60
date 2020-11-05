@@ -20,8 +20,9 @@ public class StartupApplicationListener implements ApplicationListener<ContextRe
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
         System.out.println("[StartupApplicationListener][onApplicationEvent] generating Cities and Quintiles");
 
-        quintilesService.generateAndSaveQuintilesByCollectionOfCityStatisticsFromDb();
         cityService.generateAndSaveCitiesByCollectionOfCityStatisticsFromDb();
+
+        quintilesService.generateAndSaveQuintilesByCollectionOfCityStatisticsFromDb();
 
         System.out.println("[StartupApplicationListener][onApplicationEvent] generated Cities and Quintiles");
     }

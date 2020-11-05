@@ -26,7 +26,6 @@ public class CityStatisticsServiceImpl implements CityStatisticsService {
                 || Objects.isNull(cityStatistics.getCityInsee())
                 || Objects.isNull(cityStatistics.getDepartmentName())
                 || Objects.isNull(cityStatistics.getDepartmentInsee())
-//                || Objects.isNull(cityStatistics.getRegionName())
                 || Objects.isNull(cityStatistics.getRegionInsee())
                 || Objects.isNull(cityStatistics.getPopulation())
                 || Objects.isNull(cityStatistics.getPartDesChomeurs())

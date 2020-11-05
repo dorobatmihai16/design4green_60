@@ -27,9 +27,6 @@ public class CityStatistics {
     @Column(name="insee_dep")
     private Integer departmentInsee;
 
-//    @Column(name="nom_reg")
-//    private String regionName;
-
     @Column(name="insee_reg")
     private Integer regionInsee;
 

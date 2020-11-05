@@ -1,5 +1,6 @@
 package com.design4green.digital.service.impl;
 
+import com.design4green.digital.enums.RegionEnum;
 import com.design4green.digital.model.City;
 import com.design4green.digital.model.CityStatistics;
 import com.design4green.digital.repository.CityRepository;
@@ -28,6 +29,8 @@ public class CityServiceImpl implements CityService {
     }
 
     public void generateAndSaveCitiesByCollectionOfCityStatisticsFromDb() {
+        cityRepository.deleteAll();
+
         cityRepository.saveAll(generateCitiesByCollectionOfCityStatisticsFromDb());
     }
 
@@ -49,10 +52,13 @@ public class CityServiceImpl implements CityService {
 
         city.setCityName(cityStatistics.getCityName());
         city.setCityInsee(cityStatistics.getCityInsee());
+
         city.setDepartmentName(cityStatistics.getDepartmentName());
         city.setDepartmentInsee(cityStatistics.getDepartmentInsee());
-//        city.setRegionName(cityStatistics.getRegionName());
+
+        city.setRegionName(RegionEnum.getRegionNameByCode(cityStatistics.getRegionInsee()));
         city.setRegionInsee(cityStatistics.getRegionInsee());
+
         city.setPopulation(cityStatistics.getPopulation());
 
         return Optional.of(city);
