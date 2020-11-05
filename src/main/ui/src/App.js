@@ -6,8 +6,10 @@ import './App.css';
 import AreaSelector from './components/place-selector/area-selector';
 import DataDisplay from './components/data-display/data-display';
 import RangeSelector from './components/range-selector/range-selector';
+import CookieBanner from 'react-cookie-banner';
 import withCititesInfoService from './services/with-cities-info-service';
 import withFragilityService from './services/with-get-fragility-service';
+
 
 function App(props) {
 
@@ -62,10 +64,15 @@ function App(props) {
         <div className="range-selector-container">
           <RangeSelector/>
         </div>
-        
       </div>
         
-      <DataDisplay indexData={indexInfo} />
+      <DataDisplay indexData={indexInfo} />      
+        <div>
+            <CookieBanner
+                message="GDPR compliance. This site uses cookies and no personal data !"
+                onAccept={() => {}}
+                cookie="user-has-accepted-cookies" />
+        </div>
     </div>
   );
 }
