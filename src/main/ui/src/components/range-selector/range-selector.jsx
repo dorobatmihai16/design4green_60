@@ -2,21 +2,20 @@ import { Slider } from 'antd';
 import './range-selector.css';
 
 const marks = {
-  0: '0°C',
-  26: '26°C',
-  37: '37°C',
+  0: '0',
   100: {
     style: {
       color: '#f50',
     },
-    label: <strong>100°C</strong>,
+    label: <strong>280</strong>,
   },
 };
 
 const RangeSelector = () => {
     return (
         <div className="range-container">
-            <Slider range marks={marks} defaultValue={[26, 37]} />
+            <div>Filtre score globale</div>
+            <Slider range marks={marks} defaultValue={[0, 280]} />
         </div>
     )
 }
