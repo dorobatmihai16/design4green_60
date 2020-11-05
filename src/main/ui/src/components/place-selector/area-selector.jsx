@@ -2,9 +2,9 @@ import { Cascader } from 'antd';
 import 'antd/dist/antd.css';
 import './area-selector.css';
 
-function onChange(value) {
-    console.log(value);
-  }
+// function onChange(value) {
+//     console.log('selected:', value);
+//   }
   
 // const options = [
 //     {
@@ -46,19 +46,19 @@ function onChange(value) {
 //   ];
 
 const AreaSelector = (props) => {
-  const {citiesInfo} = props;
+  const {citiesInfo, selectionHandler} = props;
 
   console.log('dd', citiesInfo);
 
   const citiesTreeOnlyRegions = citiesInfo.reduce( (acc, current) => {
 
-    if(!acc.find(elem => elem.value.code === current.regionInsee)) {
+    if(!acc.find(elem => elem.value === current.regionInsee)) {
         acc.push({
-          value: {label: current.regionName, code: current.regionInsee, type: 'region'},
-          label: current.regionName,
+          value: current.regionInsee,
+          label: current.regionName || current.regionInsee,
           children: [        
               {
-                value: {label: current.departmentName, code: current.departmentInsee, type: 'department'},
+                value: current.departmentInsee,
                 label: current.departmentName,
                 children: [
                   {              
@@ -72,16 +72,15 @@ const AreaSelector = (props) => {
     } 
     else {
       acc
-      .filter(elementReg => elementReg.value.code === current.regionInsee)
-      .map(elementReg => {
-        console.log('push', elementReg, current);
-        if(!elementReg.children.find(elementDep => elementDep.value.code === current.departmentInsee)) {          
+      .filter(elementReg => elementReg.value === current.regionInsee)
+      .map(elementReg => {        
+        if(!elementReg.children.find(elementDep => elementDep.value === current.departmentInsee)) {          
           elementReg.children.push({
-            value: {label: current.departmentName, code: current.departmentInsee, type: 'department'},
+            value: current.departmentInsee,
             label: current.departmentName,
             children: [
               {              
-                value: current.cityInsee,
+                value: current.cityInsee,                
                 label: current.cityName,
               },
             ],
@@ -89,12 +88,12 @@ const AreaSelector = (props) => {
         } 
         else {
           elementReg.children
-          .filter(elementDep => elementDep.value.code === current.departmentInsee)
+          .filter(elementDep => elementDep.value === current.departmentInsee)
           .map(elemDep => {
-            elemDep.children.push(                  {              
-              value: current.cityInsee,
-              label: current.cityName,
-            })            
+            elemDep.children.push({          
+              value: current.cityInsee,                
+              label: current.cityName
+          })            
             return elemDep
           })
 
@@ -110,14 +109,18 @@ const AreaSelector = (props) => {
 
   }, [])
 
+  console.log('citiesTreeOnlyRegions', citiesTreeOnlyRegions);
+
   return (
           <div className="area-selector">
               <Cascader 
               options={citiesTreeOnlyRegions} 
-              onChange={onChange} 
+              onChange={selectionHandler} 
               expandTrigger='hover' 
               showSearch={ {filter:  (inputValue, path) => path.some(option => option.label.toLowerCase().indexOf(inputValue.toLowerCase()) > -1) }}
-              changeOnSelect />
+              changeOnSelect 
+              style={{ width: '80%' }}
+              />
           </div>
     )
   }

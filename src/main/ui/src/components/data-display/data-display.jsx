@@ -99,9 +99,9 @@ const data = [
   
 
 
-const DataDisplay = () => (
+const DataDisplay = ({indexData}) => (
     <div className="main-table">
-       <Table dataSource={data} columns={columns} />;
+       <Table dataSource={indexData} columns={columns} />;
     </div>
 )
 

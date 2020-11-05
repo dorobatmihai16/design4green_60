@@ -1,26 +1,25 @@
 import {backend_url_prefix} from './constants.js';
 
+
+// retrieveFragilityCity: PropTypes.func.isRequired,
+// retrieveFragilityDeparment: PropTypes.func.isRequired,
+// retrieveFragilityRegion: PropTypes.func.isRequired, 
+
+
+
 const withFragilityService = BaseComponent => (props) => {
-    const retrieveFragility = (regionCode, depCode, comCode) => {
 
-        if(comCode) {
-            return fetch(`${backend_url_prefix}/fragilityCity`)
-            .then(response => response.json());     
-        } else if(depCode) {
-            return fetch(`${backend_url_prefix}/fragilityDep`)
-            .then(response => response.json());     
-        } else if(regionCode) {
-                return fetch(`${backend_url_prefix}/fragilityRegion`)
-                .then(response => response.json());         
-        } else {
-            return fetch(`${backend_url_prefix}/fragilityAllData`)
-            .then(response => response.json());         
-        }
 
-        
-        
-    }
-    return (<BaseComponent {...props} retrieveFragility={retrieveFragility}/> )
+    const retrieveFragilityCity = comCode => fetch(`${backend_url_prefix}/get-result-by-city?cityInsee=${comCode}`).then(response => response.json());
+    const retrieveFragilityDeparment = depCode => fetch(`${backend_url_prefix}/get-result-by-department?departmentInsee=${depCode}`).then(response => response.json());
+    const retrieveFragilityRegion = regionCode => fetch(`${backend_url_prefix}/get-result-by-region?get-result-by-region?regionInsee=${regionCode}`).then(response => response.json());
+
+    return (<BaseComponent 
+        {...props} 
+        retrieveFragilityCity={retrieveFragilityCity} 
+        retrieveFragilityDeparment={retrieveFragilityDeparment} 
+        retrieveFragilityRegion={retrieveFragilityRegion}/> 
+        )
 }
 
 export default withFragilityService;
