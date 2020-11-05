@@ -12,7 +12,7 @@ public interface QuintilesService {
 
     List<Quintile> findByCityInsee(Integer cityInsee);
 
-    List<Quintile> findByScoreGlobalBetween(Integer fromScore, Integer toScore);
+//    List<Quintile> findByScoreGlobalBetween(Double fromScore, Double toScore);
 
     void generateAndSaveQuintilesByCollectionOfCityStatisticsFromDb();
 

@@ -13,7 +13,7 @@ public class Quintile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="quintiles_id")
+    @Column(name="id")
     private Long id;
 
     @Column(name="insee_com")
@@ -25,22 +25,22 @@ public class Quintile {
     @Column(name="insee_reg")
     private Integer regionInsee;
 
-    @Column(name="access_aux_interfaces")
+    @Column(name="acces_aux_interfaces_numeriques")
     private Double accessAuxInterfaces;
 
-    @Column(name="access_a_information")
+    @Column(name="acces_a_l_information")
     private Double accessAInformation;
 
-    @Column(name="access_global")
+    @Column(name="global_acces")
     private Double accessGlobal;
 
-    @Column(name="competeces_administratives")
+    @Column(name="competences_administatives")
     private Double competencesAdministratives;
 
-    @Column(name="competeces_numeriques")
+    @Column(name="competences_numeriques_scolaires")
     private Double competencesNumeriques;
 
-    @Column(name="competeces_global")
+    @Column(name="global_competences")
     private Double competencesGlobal;
 
     @Column(name="score_global")
