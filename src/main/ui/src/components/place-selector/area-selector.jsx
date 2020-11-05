@@ -5,8 +5,6 @@ import './area-selector.css';
 const AreaSelector = (props) => {
   const {citiesInfo, selectionHandler} = props;
 
-  console.log('dd', citiesInfo);
-
   const citiesTreeOnlyRegions = citiesInfo.reduce( (acc, current) => {
 
     if(!acc.find(elem => elem.value === current.regionInsee)) {
@@ -70,6 +68,8 @@ const AreaSelector = (props) => {
 
   return (
           <div className="area-selector">
+
+              <div>Filtre Région / Département / Commune </div>
               <Cascader 
               options={citiesTreeOnlyRegions} 
               onChange={selectionHandler} 
