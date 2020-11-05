@@ -21,10 +21,10 @@ function App(props) {
 
   const transformIndexInfo = (data) => data.map(cityEntry => ({
 
-    nomcom: cityEntry.cityInsee,
+    nomcom: cityEntry.cityName,
     codepostal: cityEntry.cityInsee,
-    region: cityEntry.regionInsee,
-    population: 0,
+    region: cityEntry.regionName,
+    population: cityEntry.populationLegale,
     SCORE_GLOBAL: cityEntry.scoreGlobal,
     Access_aux_interface_numerique: cityEntry.competencesNumeriques,
     ACCESS_INFORMATION: cityEntry.accessAInformation,
